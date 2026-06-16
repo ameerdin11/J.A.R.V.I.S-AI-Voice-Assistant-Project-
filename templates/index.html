@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S - Cybernetic Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Cybernetic CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- TOP HEADER BAR -->
+        <header class="header-bar">
+            <div class="header-left">
+                <span class="logo-text">J.A.R.V.I.S</span>
+                <span class="status-pill active"><span class="dot"></span> Online</span>
+            </div>
+            <div class="header-center">
+                <div class="pill-container" id="clock-widget">
+                    <i class="fa-regular fa-clock"></i> <span id="current-time">12:00:00 PM</span> | <span id="current-date">June 14, 2026</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="weather-header-pill" id="header-weather">
+                    <i class="fa-solid fa-temperature-half"></i> <span id="header-temp">--°C</span> <span id="header-location">Loading...</span>
+                </div>
+                <button class="settings-btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT GRID -->
+        <main class="dashboard-grid">
+            
+            <!-- LEFT PANEL: SYSTEM WIDGETS -->
+            <section class="side-panel left-panel">
+                
+                <!-- WIDGET 1: SYSTEM STATS -->
+                <div class="card widget-card system-stats">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-microchip"></i> System Stats</h3>
+                        <button class="card-refresh-btn"><i class="fa-solid fa-arrows-rotate"></i></button>
+                    </div>
+                    <div class="card-body">
+                        <div class="stat-progress-group">
+                            <div class="stat-progress-labels">
+                                <span>CPU Usage</span>
+                                <span id="cpu-percent-label">0%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="cpu-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="stat-progress-group">
+                            <div class="stat-progress-labels">
+                                <span>RAM Usage</span>
+                                <span id="ram-used-label">0 GB</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="ram-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <span class="stat-val" id="cpu-stat-val">0%</span>
+                                <span class="stat-title">CPU</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-val" id="ram-stat-val">0%</span>
+                                <span class="stat-title">Memory</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-val" id="disk-stat-val">0/0 GB</span>
+                                <span class="stat-title">Disk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WIDGET 2: WEATHER -->
+                <div class="card widget-card weather-widget">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-cloud-sun"></i> Weather</h3>
+                        <button class="card-refresh-btn"><i class="fa-solid fa-arrows-rotate"></i></button>
+                    </div>
+                    <div class="card-body weather-body">
+                        <div class="weather-row-main">
+                            <div class="weather-temp-block">
+                                <span class="weather-temp" id="weather-temp-val">--°C</span>
+                                <span class="weather-city" id="weather-location-val">Loading...</span>
+                                <span class="weather-desc" id="weather-desc-val">overcast clouds</span>
+                            </div>
+                            <div class="weather-icon-block">
+                                <i class="fa-solid fa-cloud weather-icon-large"></i>
+                            </div>
+                        </div>
+                        <div class="weather-grid">
+                            <div class="weather-detail-item">
+                                <span class="weather-detail-title">Humidity</span>
+                                <span class="weather-detail-val" id="weather-humidity-val">--%</span>
+                            </div>
+                            <div class="weather-detail-item">
+                                <span class="weather-detail-title">Wind</span>
+                                <span class="weather-detail-val" id="weather-wind-val">-- m/s</span>
+                            </div>
+                            <div class="weather-detail-item">
+                                <span class="weather-detail-title">Feels Like</span>
+                                <span class="weather-detail-val" id="weather-feels-val">--°C</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WIDGET 3: CAMERA -->
+                <div class="card widget-card camera-widget">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-camera"></i> Camera</h3>
+                        <div class="camera-actions">
+                            <button id="toggle-camera-btn-header" title="Toggle Camera"><i class="fa-solid fa-power-off"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body camera-body">
+                        <div class="camera-feed-box" id="camera-feed">
+                            <div class="camera-off-overlay">
+                                <i class="fa-solid fa-video-slash camera-icon-large"></i>
+                                <span>Camera Off</span>
+                            </div>
+                            <video id="webcam-video" autoplay playsinline style="display: none;"></video>
+                            <canvas id="webcam-canvas" style="display: none;"></canvas>
+                            <div class="camera-hud-overlay" style="display: none;">
+                                <div class="hud-corner top-left"></div>
+                                <div class="hud-corner top-right"></div>
+                                <div class="hud-corner bottom-left"></div>
+                                <div class="hud-corner bottom-right"></div>
+                                <span class="hud-scan-line"></span>
+                                <span class="hud-rec-tag"><span class="rec-dot"></span> SCANNING REC</span>
+                            </div>
+                        </div>
+                        <span class="camera-status-text" id="camera-msg">Camera is inactive. Click the power button to start.</span>
+                    </div>
+                </div>
+
+                <!-- WIDGET 4: SYSTEM UPTIME -->
+                <div class="card widget-card uptime-widget">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-clock-rotate-left"></i> System Uptime</h3>
+                        <span class="uptime-badge" id="uptime-mini">00:00:00</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="uptime-row">
+                            <span class="uptime-label">System Running For:</span>
+                            <span class="uptime-val" id="uptime-counter">00:00:00</span>
+                        </div>
+                        <div class="uptime-stats-grid">
+                            <div class="uptime-stat-item">
+                                <span class="uptime-stat-title">Session</span>
+                                <span class="uptime-stat-val">1</span>
+                            </div>
+                            <div class="uptime-stat-item">
+                                <span class="uptime-stat-title">Commands</span>
+                                <span class="uptime-stat-val" id="commands-executed-val">0</span>
+                            </div>
+                        </div>
+                        <div class="uptime-load-group">
+                            <div class="uptime-load-labels">
+                                <span>System Load</span>
+                                <span class="load-text load-moderate" id="system-load-text">Moderate</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill load-fill-moderate" id="load-progress-bar" style="width: 26%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- CENTER PANEL: SOUNDWAVE ORB & STATUS -->
+            <section class="center-panel">
+                <div class="orb-container-outer">
+                    <div class="cyber-circles">
+                        <div class="circle ring-outer"></div>
+                        <div class="circle ring-middle"></div>
+                        <div class="circle ring-inner"></div>
+                        <!-- CORE GLOWING SOUNDWAVE ORB -->
+                        <div class="voice-orb" id="jarvis-voice-orb">
+                            <div class="orb-bars">
+                                <span class="wave-bar bar-1"></span>
+                                <span class="wave-bar bar-2"></span>
+                                <span class="wave-bar bar-3"></span>
+                                <span class="wave-bar bar-4"></span>
+                                <span class="wave-bar bar-5"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="center-status-block">
+                    <h2>J.A.R.V.I.S</h2>
+                    <div class="listening-pill" id="assistant-status-pill">
+                        <span class="pulse-dot"></span>
+                        <span id="assistant-status-text">Listening for wake word...</span>
+                    </div>
+                </div>
+
+                <!-- CONTROLS CAROUSEL / NAV BAR -->
+                <div class="center-controls-carousel">
+                    <button class="nav-control-btn" id="camera-power-btn" title="Toggle Camera Feed">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                    <button class="nav-control-btn active" id="mic-trigger-btn" title="Speak to Jarvis">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <button class="nav-control-btn" id="keyboard-focus-btn" title="Type to Jarvis">
+                        <i class="fa-solid fa-keyboard"></i>
+                    </button>
+                </div>
+                <div class="carousel-indicators">
+                    <span class="indicator"></span>
+                    <span class="indicator active"></span>
+                    <span class="indicator"></span>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: CONVERSATION MODULE -->
+            <section class="side-panel right-panel conversation-panel">
+                <div class="card chat-card">
+                    <div class="card-header chat-header">
+                        <h3>Conversation</h3>
+                        <div class="chat-actions">
+                            <button id="clear-chat-btn" title="Clear Conversation"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                            <button id="export-chat-btn" title="Export Chat History"><i class="fa-solid fa-file-export"></i> Extract Conversation</button>
+                        </div>
+                    </div>
+                    <div class="card-body chat-body" id="chat-messages-container">
+                        <!-- Default starting message -->
+                        <div class="chat-message jarvis-msg">
+                            <div class="msg-bubble">
+                                Hello, I am JARVIS. JARVIS backend is active and ready in simulation mode. How can I assist you today, Ameer?
+                            </div>
+                            <span class="msg-time" id="start-msg-time">2:45 PM</span>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <textarea id="chat-input-field" placeholder="Type a message..." rows="1"></textarea>
+                        <button id="chat-send-btn" title="Send message"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Custom Cybernetic Scripts -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

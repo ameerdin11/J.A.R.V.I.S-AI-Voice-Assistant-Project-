@@ -1,0 +1,20 @@
+openai
+whisper
+pyaudio
+sounddevice
+librosa
+noisereduce
+# webrtcvad
+gtts
+pygame
+pyttsx3
+spacy
+pyautogui
+pywhatkit
+gpiozero
+python-dotenv
+ollama
+# coqui-tts
+flask
+psutil
+
